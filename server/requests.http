@@ -1,0 +1,68 @@
+POST http://localhost:5000/api/user/signup HTTP/1.1
+content-type: application/json
+
+{
+    "email": "2dasdniilzdedmwla@gmail.com",
+    "firstName": "Даниил",
+    "lastName": "Землянов",
+    "password": "password123"
+}
+###
+
+POST http://localhost:5000/api/user/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "2dasdniilzdemwla@gmail.com",
+    "password": "password123"
+}
+
+###
+GET http://localhost:5000/api/user/2 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIwIjoiMiIsIjEiOiJkIiwiMiI6ImEiLCIzIjoicyIsIjQiOiJkIiwiNSI6Im4iLCI2IjoiaSIsIjciOiJpIiwiOCI6ImwiLCI5IjoieiIsIjEwIjoiZCIsIjExIjoiZSIsIjEyIjoibSIsIjEzIjoidyIsIjE0IjoibCIsIjE1IjoiYSIsIjE2IjoiQCIsIjE3IjoiZyIsIjE4IjoibSIsIjE5IjoiYSIsIjIwIjoiaSIsIjIxIjoibCIsIjIyIjoiLiIsIjIzIjoiYyIsIjI0IjoibyIsIjI1IjoibSIsImlhdCI6MTcyMjc4ODU2MiwiZXhwIjoxNzIyNzkwMzYyfQ.LeIenh7bq5OXbuejnxi05jaCYaxXNohqPy3sgxfnPEE
+
+###
+GET http://localhost:5000/api/user/1 HTTP/1.1
+content-type: application/json
+
+
+### FIRENDSHIP
+POST http://localhost:5000/api/user/add-friend HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIwIjoiMiIsIjEiOiJkIiwiMiI6ImEiLCIzIjoicyIsIjQiOiJkIiwiNSI6Im4iLCI2IjoiaSIsIjciOiJpIiwiOCI6ImwiLCI5IjoieiIsIjEwIjoiZCIsIjExIjoiZSIsIjEyIjoibSIsIjEzIjoidyIsIjE0IjoibCIsIjE1IjoiYSIsIjE2IjoiQCIsIjE3IjoiZyIsIjE4IjoibSIsIjE5IjoiYSIsIjIwIjoiaSIsIjIxIjoibCIsIjIyIjoiLiIsIjIzIjoiYyIsIjI0IjoibyIsIjI1IjoibSIsImlhdCI6MTcyMjc4ODU2MiwiZXhwIjoxNzIyNzkwMzYyfQ.LeIenh7bq5OXbuejnxi05jaCYaxXNohqPy3sgxfnPEE
+
+{
+    "userId": "1",
+    "friendId": "2"
+}
+
+###
+POST http://localhost:5000/api/user/remove-friend HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIwIjoiMiIsIjEiOiJkIiwiMiI6ImEiLCIzIjoicyIsIjQiOiJkIiwiNSI6Im4iLCI2IjoiaSIsIjciOiJpIiwiOCI6ImwiLCI5IjoieiIsIjEwIjoiZCIsIjExIjoiZSIsIjEyIjoibSIsIjEzIjoidyIsIjE0IjoibCIsIjE1IjoiYSIsIjE2IjoiQCIsIjE3IjoiZyIsIjE4IjoibSIsIjE5IjoiYSIsIjIwIjoiaSIsIjIxIjoibCIsIjIyIjoiLiIsIjIzIjoiYyIsIjI0IjoibyIsIjI1IjoibSIsImlhdCI6MTcyMjc4ODU2MiwiZXhwIjoxNzIyNzkwMzYyfQ.LeIenh7bq5OXbuejnxi05jaCYaxXNohqPy3sgxfnPEE
+
+{
+    "userId": "1",
+    "friendId": "2"
+}
+
+### GROUPS
+POST http://localhost:5000/api/groups/create-group HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIwIjoiMiIsIjEiOiJkIiwiMiI6ImEiLCIzIjoicyIsIjQiOiJkIiwiNSI6Im4iLCI2IjoiaSIsIjciOiJpIiwiOCI6ImwiLCI5IjoieiIsIjEwIjoiZCIsIjExIjoiZSIsIjEyIjoibSIsIjEzIjoidyIsIjE0IjoibCIsIjE1IjoiYSIsIjE2IjoiQCIsIjE3IjoiZyIsIjE4IjoibSIsIjE5IjoiYSIsIjIwIjoiaSIsIjIxIjoibCIsIjIyIjoiLiIsIjIzIjoiYyIsIjI0IjoibyIsIjI1IjoibSIsImlhdCI6MTcyMjc4ODU2MiwiZXhwIjoxNzIyNzkwMzYyfQ.LeIenh7bq5OXbuejnxi05jaCYaxXNohqPy3sgxfnPEE
+
+{
+    "name": "wiq's group",
+    "description": "description",
+    "ownerId": "1"
+}
+
+###
+POST http://localhost:5000/api/groups/delete-group HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIwIjoiMiIsIjEiOiJkIiwiMiI6ImEiLCIzIjoicyIsIjQiOiJkIiwiNSI6Im4iLCI2IjoiaSIsIjciOiJpIiwiOCI6ImwiLCI5IjoieiIsIjEwIjoiZCIsIjExIjoiZSIsIjEyIjoibSIsIjEzIjoidyIsIjE0IjoibCIsIjE1IjoiYSIsIjE2IjoiQCIsIjE3IjoiZyIsIjE4IjoibSIsIjE5IjoiYSIsIjIwIjoiaSIsIjIxIjoibCIsIjIyIjoiLiIsIjIzIjoiYyIsIjI0IjoibyIsIjI1IjoibSIsImlhdCI6MTcyMjc4ODU2MiwiZXhwIjoxNzIyNzkwMzYyfQ.LeIenh7bq5OXbuejnxi05jaCYaxXNohqPy3sgxfnPEE
+
+{
+    
+}

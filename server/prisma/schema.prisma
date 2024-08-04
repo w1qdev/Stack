@@ -1,0 +1,42 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// models
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  firstName      String
+  lastName       String?
+  hashedPassword String
+  token          String?
+  createdAt      DateTime @default(now())
+
+  bio            String?
+  profilePicture String?  // url link
+
+  friends        User[]   @relation("FriendRelation")
+  friendOf       User[]   @relation("FriendRelation")
+
+  servers        Group[]  @relation("UserServers")
+
+  ownedServers   Group[]  @relation("ServerOwner")
+}
+
+model Group {
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String?
+  createdAt      DateTime  @default(now())
+  
+  owner          User      @relation("ServerOwner", fields: [ownerId], references: [id])
+  ownerId        Int
+
+  members        User[]    @relation("UserServers")
+}
