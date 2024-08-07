@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { passwordService } from "../services/passwordHasher.service.js";
-import { prisma } from "../db/prisma.js";
 import { tokenService } from "../services/token.service.js";
 import { userService } from "../services/user.service.js";
 
@@ -15,10 +14,11 @@ export const userController = {
     loginUser: async (req: Request, res: Response) => {
         const userData = req.body;
 
-        const existsUser = await prisma.user.findFirst({
-            where: {
-                email: userData.email,
-            },
+        const existsUser = await userService.getUserByEmail(userData.email, {
+            email: true,
+            firstName: true,
+            lastName: true,
+            hashedPassword: true,
         });
 
         if (!existsUser?.email) {
@@ -42,16 +42,9 @@ export const userController = {
             userData.email
         ).accessToken;
 
-        const loginedUser = await prisma.user.update({
-            where: {
-                email: userData.email,
-            },
-            data: {
-                token: newToken,
-            },
+        await userService.UpdateUserDataByEmail(userData.email, {
+            token: newToken,
         });
-
-        console.log(loginedUser);
 
         res.cookie("token", newToken, {
             httpOnly: true,
@@ -70,11 +63,7 @@ export const userController = {
     createUser: async (req: Request, res: Response) => {
         const userData: userLoginDto = req.body;
 
-        const existsUser = await prisma.user.findFirst({
-            where: {
-                email: userData.email,
-            },
-        });
+        const existsUser = await userService.getUserByEmail(userData.email);
 
         if (existsUser) {
             return res.send({ message: "Данный пользователь уже существует" });
@@ -85,7 +74,6 @@ export const userController = {
         );
 
         const tokens = tokenService.generateTokens({
-            id: existsUser!.id,
             email: userData!.email,
         });
 

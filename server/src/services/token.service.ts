@@ -9,7 +9,6 @@ export type TokensType = {
 };
 
 export type generateTokensPayload = {
-    id: number;
     email: string;
 };
 

@@ -8,6 +8,25 @@ export type UserCreateDto = {
     token?: string;
 };
 
+export type UserSelectedValues = {
+    id?: boolean;
+    email?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    hashedPassword?: boolean;
+    token?: boolean;
+};
+
+export type UserDataToUpdate = {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    token?: string;
+    hashedPassword?: string;
+    bio?: string;
+    profilePicture?: string;
+};
+
 class UserService {
     public async getAllUsers() {
         const users = await prisma.user.findMany({
@@ -21,16 +40,20 @@ class UserService {
         return users;
     }
 
-    public async getUserByEmail(email: string) {
+    public async getUserByEmail(
+        email: string,
+        selectedValues: UserSelectedValues = {}
+    ) {
         const user = await prisma.user.findFirst({
-            where: {
-                email: email,
-            },
-            select: {
-                email: true,
-                firstName: true,
-                lastName: true,
-            },
+            where: { email: email },
+            select: Object.keys(selectedValues).length
+                ? { ...selectedValues }
+                : {
+                      id: true,
+                      email: true,
+                      firstName: true,
+                      lastName: true,
+                  },
         });
 
         return user;
@@ -56,6 +79,18 @@ class UserService {
         }
 
         return user;
+    }
+
+    public async UpdateUserDataByEmail(
+        email: string,
+        payload: UserDataToUpdate
+    ) {
+        const result = await prisma.user.update({
+            where: { email: email },
+            data: { ...payload },
+        });
+
+        return result;
     }
 
     public async addFriend(userId: string, friendId: string) {
