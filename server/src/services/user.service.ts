@@ -1,8 +1,9 @@
 import { prisma } from "../db/prisma.js";
+import { validator } from "./validator.service.js";
 
 export type UserCreateDto = {
     email: string;
-    firstName: string;
+    firstName?: string;
     lastName?: string;
     hashedPassword: string;
     token?: string;

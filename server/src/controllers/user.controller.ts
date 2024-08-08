@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { passwordService } from "../services/passwordHasher.service.js";
 import { tokenService } from "../services/token.service.js";
 import { userService } from "../services/user.service.js";
+import { validator } from "../services/validator.service.js";
 
 export type userLoginDto = {
     email: string;
-    firstName: string;
-    lastName: string;
+    // firstName: string;
+    // lastName: string;
     password: string;
 };
 
@@ -63,6 +64,17 @@ export const userController = {
     createUser: async (req: Request, res: Response) => {
         const userData: userLoginDto = req.body;
 
+        const emailValidation = validator.validateEmail(userData.email);
+        const passwordValidation = validator.validatePassword(
+            userData.password
+        );
+
+        if (!emailValidation || !passwordValidation) {
+            return res.send({
+                message: "Введены не правильнные email или пароль",
+            });
+        }
+
         const existsUser = await userService.getUserByEmail(userData.email);
 
         if (existsUser) {
@@ -79,8 +91,6 @@ export const userController = {
 
         const userPayload = {
             email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
             hashedPassword: hashedPassword,
             token: tokens.accessToken,
         };
