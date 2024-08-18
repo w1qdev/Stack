@@ -1,8 +1,7 @@
-// import { FC } from "react";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import SignUp from "@/components/SignUp/SignUp";
-import LogIn from "@/components/LogIn/LogIn";
+import SignUp from "@/components/LogIn/LogIn";
+import LogIn from "@/components/SignUp/SignUp";
 
 export interface AuthProps {
     handleChangeLoginStatus: () => void;

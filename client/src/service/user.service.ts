@@ -1,4 +1,5 @@
 import { api } from "./api/axios";
+import Cookies from "cookie";
 
 export type userPayload = {
     email: string;
@@ -13,9 +14,17 @@ export const UserService = {
         return result;
     },
     signUp: async (payload: userPayload) => {
-        // create user
         const result = await api.post("/user/signup", payload);
 
         return result;
+    },
+    saveToken: (token: string) => {
+        const options = {
+            path: "/",
+            sameSite: true, // Защита от CSRF
+            maxAge: 5 * 365 * 24 * 60 * 60, // 5 лет в секундах
+        };
+
+        document.cookie = Cookies.serialize("authToken", token, options);
     },
 };

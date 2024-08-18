@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AuthProps } from "@/pages/auth-page/AuthPage";
-import Input from "../Form/Input/Input";
 import { UserService } from "@/service/user.service";
+import { Spinner } from "@chakra-ui/react";
+import toast from "react-hot-toast";
 
 const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
     const [formValues, setFormValues] = useState({
@@ -10,6 +11,10 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
         password: "",
         isSaveDeviceAuth: false,
     });
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const submitButtonStatus =
+        isFetching === true ? <Spinner color="black.800" /> : "Продолжить";
 
     const handleChangeFormValues = (e) => {
         const { type, value, id } = e.target;
@@ -30,11 +35,20 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        try {
+            e.preventDefault();
 
-        const response = await UserService.logIn(formValues);
+            setIsFetching(true);
+            const response = await UserService.logIn(formValues);
 
-        console.log(response);
+            if (response.data.userData) {
+                return toast.success("Вы успешно зарегистрировались!");
+            }
+
+            return toast.error(response.data.message);
+        } finally {
+            setIsFetching(false);
+        }
     };
 
     return (
@@ -59,7 +73,8 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
                 <label className="mb-[6px] ml-[10px]" htmlFor="email">
                     Email
                 </label>
-                <Input
+                <input
+                    className="w-[100%] rounded-[6px] bg-transparent border-[1px] border-[#FFFFFF]/[0.36] outline-none py-[8px] px-[16px] transition duration-300 placeholder:text-[#FFFFFF]/[0.33] focus:border-[#ffffff]"
                     type="email"
                     placeholder="example@email.com"
                     id="email"
@@ -85,7 +100,7 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
             <div className="w-[100%] flex items-center space-x-2 ml-3 mt-2 mb-[30px]">
                 <input
                     type="checkbox"
-                    className="w-[15px] h-[15px] bg-slate-50 mr-2 cursor-pointer"
+                    className="bg-slate-50 mr-2"
                     id="isSaveDeviceAuth"
                     checked={formValues.isSaveDeviceAuth}
                     onChange={handleChangeFormValues}
@@ -100,11 +115,11 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
 
             <div className="w-[100%] flex items-center space-x-2">
                 <button
-                    onClick={handleSubmit}
                     type="submit"
+                    onClick={handleSubmit}
                     className="w-[100%] h-[50px] bg-[#ffffff] rounded-[6px] text-black text-xl transition duration-300 hover:bg-purple-500 hover:text-white"
                 >
-                    Продолжить
+                    {submitButtonStatus}
                 </button>
             </div>
 
