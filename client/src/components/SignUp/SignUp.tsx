@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AuthProps } from "@/pages/auth-page/AuthPage";
+import { toast } from "react-toastify";
 import Input from "../Form/Input/Input";
 import { UserService } from "@/service/user.service";
-import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
     const [formValues, setFormValues] = useState({
@@ -12,6 +13,8 @@ const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
         isSaveDeviceAuth: false,
     });
     const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const navigate = useNavigate();
 
     const handleChangeFormValues = (e) => {
         const { type, value, id } = e.target;
@@ -36,15 +39,19 @@ const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
             e.preventDefault();
 
             setIsFetching(true);
-            const response = await UserService.signUp(formValues);
+            const response = await UserService.logIn(formValues);
 
             if (response.data.userData) {
-                UserService.saveToken(response.data.userData.token);
+                // UserService.saveToken(response.data.userData.token);
 
-                return toast.success("Вы успешно зарегистрировались!");
+                toast.success("Вы успешно вошли в аккаунт!");
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000);
+            } else {
+                toast.error(response.data.message);
             }
-
-            return toast.error(response.data.message);
         } finally {
             setIsFetching(false);
         }

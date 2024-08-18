@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AuthProps } from "@/pages/auth-page/AuthPage";
-import { UserService } from "@/service/user.service";
 import { Spinner } from "@chakra-ui/react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { UserService } from "@/service/user.service";
 
 const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
     const [formValues, setFormValues] = useState({
@@ -12,6 +13,8 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
         isSaveDeviceAuth: false,
     });
     const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const navigate = useNavigate();
 
     const submitButtonStatus =
         isFetching === true ? <Spinner color="black.800" /> : "Продолжить";
@@ -39,13 +42,19 @@ const LogIn = ({ handleChangeLoginStatus }: AuthProps) => {
             e.preventDefault();
 
             setIsFetching(true);
-            const response = await UserService.logIn(formValues);
+            const response = await UserService.signUp(formValues);
 
             if (response.data.userData) {
-                return toast.success("Вы успешно зарегистрировались!");
-            }
+                // UserService.saveToken(response.data.userData.token);
 
-            return toast.error(response.data.message);
+                toast.success("Вы успешно зарегистрировались!");
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000);
+            } else {
+                toast.error(response.data.message);
+            }
         } finally {
             setIsFetching(false);
         }

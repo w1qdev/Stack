@@ -50,13 +50,13 @@ export const userController = {
         res.cookie("token", newToken, {
             httpOnly: true,
             path: "/api",
+            expires: new Date(new Date().getTime() + 5 * 1000),
         });
 
         return res.send({
             message: "Успешный вход в аккаунт",
             userData: {
                 email: existsUser.email,
-                token: newToken,
             },
         });
     },
@@ -97,11 +97,19 @@ export const userController = {
 
         await userService.createUser(userPayload);
 
+        const date = new Date();
+        date.setFullYear(date.getFullYear() + 5);
+
+        res.cookie("token", tokens.accessToken, {
+            httpOnly: true,
+            path: "/api",
+            expires: date,
+        });
+
         return res.send({
             message: "Новый пользователь успешно создан!",
             userData: {
                 email: userData.email,
-                accessToken: tokens.accessToken,
             },
         });
     },
