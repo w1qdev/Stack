@@ -3,7 +3,7 @@ interface OwnProps {
     id?: string;
     type?: string;
     placeholder?: string;
-    value: string;
+    value: string | null;
     onChange: (e) => void;
 }
 

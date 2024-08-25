@@ -13,52 +13,59 @@ export type userLoginDto = {
 
 export const userController = {
     loginUser: async (req: Request, res: Response) => {
-        const userData = req.body;
+        try {
+            const userData = req.body;
 
-        const existsUser = await userService.getUserByEmail(userData.email, {
-            email: true,
-            firstName: true,
-            lastName: true,
-            hashedPassword: true,
-        });
+            const existsUser = await userService.getUserByEmail(
+                userData.email,
+                {
+                    email: true,
+                    firstName: true,
+                    lastName: true,
+                    hashedPassword: true,
+                }
+            );
 
-        if (!existsUser?.email) {
-            return res.send({
-                message: "что-то пошло не так, попробуйте позже",
+            if (!existsUser?.email) {
+                return res.send({
+                    message: "что-то пошло не так, попробуйте позже",
+                });
+            }
+
+            const isPasswordMatch = await passwordService.comparePasswords(
+                userData?.password,
+                existsUser.hashedPassword
+            );
+
+            if (!isPasswordMatch) {
+                return res.send({
+                    message: "что-то пошло не так, попробуйте позже",
+                });
+            }
+
+            const newToken = tokenService.generateTokens(
+                userData.email
+            ).accessToken;
+
+            await userService.UpdateUserDataByEmail(userData.email, {
+                token: newToken,
             });
-        }
 
-        const isPasswordMatch = await passwordService.comparePasswords(
-            userData?.password,
-            existsUser.hashedPassword
-        );
-
-        if (!isPasswordMatch) {
-            return res.send({
-                message: "что-то пошло не так, попробуйте позже",
+            res.cookie("token", newToken, {
+                httpOnly: true,
+                path: "/api",
+                expires: new Date(new Date().getTime() + 5 * 1000),
             });
+
+            return res.send({
+                message: "Успешный вход в аккаунт",
+                userData: {
+                    email: existsUser.email,
+                },
+            });
+        } catch (e) {
+            console.error(e);
         }
-
-        const newToken = tokenService.generateTokens(
-            userData.email
-        ).accessToken;
-
-        await userService.UpdateUserDataByEmail(userData.email, {
-            token: newToken,
-        });
-
-        res.cookie("token", newToken, {
-            httpOnly: true,
-            path: "/api",
-            expires: new Date(new Date().getTime() + 5 * 1000),
-        });
-
-        return res.send({
-            message: "Успешный вход в аккаунт",
-            userData: {
-                email: existsUser.email,
-            },
-        });
     },
 
     createUser: async (req: Request, res: Response) => {
@@ -151,6 +158,35 @@ export const userController = {
 
         return res.send({
             message: "Успешное удаление из друзей",
+        });
+    },
+
+    resetPassword: async (req: Request, res: Response) => {
+        const payload = req.body;
+
+        await userService.resetPassword({
+            email: payload.email,
+        });
+
+        return res.send({
+            message: "Смена пароля процесс: 1 из 2",
+        });
+    },
+
+    checkHashAndResetPassword: async (req: Request, res: Response) => {
+        const payload = req.body;
+
+        const hashedPassword = await passwordService.generateHashedPassword(
+            payload.password
+        );
+
+        await userService.UpdateUserDataByEmail(payload.email, {
+            hashedPassword,
+            linkHash: "",
+        });
+
+        return res.send({
+            message: "Ваш пароль успешно сменен",
         });
     },
 };

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { AuthProps } from "@/pages/auth-page/AuthPage";
 import { toast } from "react-toastify";
 import Input from "../Form/Input/Input";
 import { UserService } from "@/service/user.service";
 import { useNavigate } from "react-router-dom";
+import { Form } from "../../service/form.service";
 
 const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
     const [formValues, setFormValues] = useState({
@@ -38,12 +40,19 @@ const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
         try {
             e.preventDefault();
 
+            if (
+                !(
+                    Form.validateEmail(formValues.email) ||
+                    Form.validatePassword(formValues.password)
+                )
+            ) {
+                return toast.error("Введены неверные данные в поля формы");
+            }
+
             setIsFetching(true);
             const response = await UserService.logIn(formValues);
 
             if (response.data.userData) {
-                // UserService.saveToken(response.data.userData.token);
-
                 toast.success("Вы успешно вошли в аккаунт!");
 
                 setTimeout(() => {
@@ -116,6 +125,15 @@ const SignUp = ({ handleChangeLoginStatus }: AuthProps) => {
                 >
                     Сохранить вход на этом устройстве
                 </label>
+            </div>
+
+            <div className="w-[100%] mb-4">
+                <Link
+                    to={"/reset-password"}
+                    className="text-white-400/[0.90] transition-colors hover:text-purple-500"
+                >
+                    Забыли пароль?
+                </Link>
             </div>
 
             <div className="w-[100%] flex items-center space-x-2">

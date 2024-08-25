@@ -22,5 +22,8 @@ userRouter.post("/remove-friend", userController.removeFriend);
 userRouter.use("/all", authenticateToken);
 userRouter.get("/all", userController.getUsers);
 
-userRouter.use("/:id", authenticateToken);
-userRouter.get("/:id", userController.getUser);
+// userRouter.use("/:id", authenticateToken);
+// userRouter.get("/:id", userController.getUser);
+
+userRouter.patch("/reset-password", userController.resetPassword);
+userRouter.post("/reset-password", userController.checkHashAndResetPassword);

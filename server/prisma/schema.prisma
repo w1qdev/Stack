@@ -17,9 +17,12 @@ model User {
   hashedPassword String
   token          String?
   createdAt      DateTime @default(now())
+  linkHash       String? 
 
   bio            String?
   profilePicture String?  // url link
+
+
 
   friends        User[]   @relation("FriendRelation")
   friendOf       User[]   @relation("FriendRelation")

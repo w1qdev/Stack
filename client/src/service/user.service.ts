@@ -13,11 +13,13 @@ export const UserService = {
 
         return result;
     },
+
     signUp: async (payload: userPayload) => {
         const result = await api.post("/user/signup", payload);
 
         return result;
     },
+
     saveToken: (token: string) => {
         const options = {
             path: "/",
@@ -26,5 +28,11 @@ export const UserService = {
         };
 
         document.cookie = Cookies.serialize("authToken", token, options);
+    },
+
+    resetPassword: async (email: string) => {
+        const result = await api.patch("/user/reset-password", { email });
+
+        return result;
     },
 };

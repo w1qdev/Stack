@@ -1,4 +1,6 @@
 import { prisma } from "../db/prisma.js";
+import { v4 as uuidv4 } from "uuid";
+import { emailService } from "./email.service.js";
 
 export type UserCreateDto = {
     email: string;
@@ -25,6 +27,7 @@ export type UserDataToUpdate = {
     hashedPassword?: string;
     bio?: string;
     profilePicture?: string;
+    linkHash?: string;
 };
 
 class UserService {
@@ -166,6 +169,18 @@ class UserService {
                 hashedPassword: payload.hashedPassword,
                 token: payload.token,
             },
+        });
+    }
+
+    public async resetPassword(payload: { email: string }) {
+        const linkHash = uuidv4();
+
+        await this.UpdateUserDataByEmail(payload.email, { linkHash });
+
+        await emailService.sendMessage({
+            to: payload.email,
+            subject: "Stack inc. Сброс пароля",
+            text: `<a href='http://localhost:5000/reset-password/${linkHash}'>Сбросить пароль</a>`,
         });
     }
 }
