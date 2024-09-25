@@ -20,8 +20,8 @@ class EmailService {
             port: 587,
             secure: false,
             auth: {
-                user: "reebok.comg@gmail.com",
-                pass: "Kill12345-",
+                user: "",
+                pass: "",
             },
         });
     }
